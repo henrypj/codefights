@@ -69,29 +69,79 @@ import sys
 # SOLUTION 1 #
 ##############
 def boxBlur(image):
-    return(image)
+    DEBUG  = False
+    starti = 0
+    startj = 0
+    rows   = len(image)
+    cols   = len(image[0])
+    numSquares = (rows - 2) * (cols - 2)
+    L = [[0] * (cols-2) for i in range(rows-2)]
+    if DEBUG:
+        print("rows       => ", rows)
+        print("cols       => ", cols)
+        print("numSquares => ", numSquares)
+        print("L => ", L)
+        
+    while numSquares > 0:
+        sum = 0
+        if DEBUG:
+            print("i range is from: ", starti, " to: ", starti + 2)
+        for i in range(starti, starti + 3):
+            if DEBUG:
+                print("i => ", i)
+                print("image[i] => ", image[i])
+                print("j range is from: ", startj, " to: ", startj + 2)
+            for j in range(startj, startj + 3):
+                if DEBUG:
+                    print("j => ", j)
+                    print("image[i][j] => ", image[i][j])
+                sum += image[i][j]
+        # Done summing square, add average to list
+        L[starti][startj] = sum // 9
+        numSquares -= 1
+        if DEBUG:
+            print("L[Si][Sj]  => ", L[starti][startj])
+            print("numSquares => ", numSquares)
+            print("startj + 3 => ", startj + 3)
+            print("starti + 3 => ", starti + 3)
+        if startj + 3 < cols:
+            # Another square on this level with starti, so increment startj
+            startj += 1
+            if DEBUG:
+                print("More squares at level: ", starti)
+                print("New startj => ", startj)
+        elif starti + 3 < rows:
+            # Another level of squares exist, increment starti and reset startj
+            starti += 1
+            startj = 0
+            if DEBUG:
+                print("Jumping to new level of squares at level: ", starti)
+                print("New startj => ", startj)
+            
+    return(L)
     
 print(boxBlur([[1,1,1], 
          [1,7,1], 
-         [1,1,1]]))                      # [[1]]
+         [1,1,1]]))                       # [[1]]
     
 print(boxBlur([[0,18,9], 
                [27,9,0], 
-               [81,63,45]]))             # [[28]]
+               [81,63,45]]))              # [[28]]
 
 print(boxBlur([[36,0,18,9], 
                [27,54,9,0],         
-               [81,63,72,45]]))          # [[40,30]]
+               [81,63,72,45]]))           # [[40,30]]
     
 print(boxBlur([[7,4,0,1], 
                [5,6,2,2], 
                [6,10,7,8], 
-               [1,4,2,0]]))              # [[5,4], [4,4]]
+               [1,4,2,0]]))               # [[5,4], [4,4]]
     
 print(boxBlur([[36,0,18,9,9,45,27], 
                [27,0,54,9,0,63,90], 
-               [81,63,72,45,18,27,0],   # [[39,30,26,25,31],
-               [0,0,9,81,27,18,45],     #  [34,37,35,32,32],
-               [45,45,27,27,90,81,72],  #  [38,41,44,46,42], 
-               [45,18,9,0,9,18,45],     #  [22,24,31,39,45], 
-               [27,81,36,63,63,72,81]]  #  [37,34,36,47,59]]   
+               [81,63,72,45,18,27,0],     # [[39,30,26,25,31],
+               [0,0,9,81,27,18,45],       #  [34,37,35,32,32],
+               [45,45,27,27,90,81,72],    #  [38,41,44,46,42], 
+               [45,18,9,0,9,18,45],       #  [22,24,31,39,45], 
+               [27,81,36,63,63,72,81]]))  #  [37,34,36,47,59]]   
+    
